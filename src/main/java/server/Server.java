@@ -1,14 +1,15 @@
 package server;
 
 import javafx.util.Pair;
+import server.models.Course;
+import server.models.RegistrationForm;
 
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
+import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Scanner;
 
 public class Server {
 
@@ -91,8 +92,29 @@ public class Server {
      @param arg la session pour laquelle on veut récupérer la liste des cours
      */
     public void handleLoadCourses(String arg) {
-        // TODO: implémenter cette méthode
+        ArrayList<Course> courseList =  new ArrayList<Course>();
+        try {
+            File fileCourses = new File ("..\\..\\..\\src\\main\\java\\server\\data\\cours.txt");
+            try (Scanner scanner = new Scanner (fileCourses)) {
+                while (scanner.hasNext()) {
+                    String line = scanner.nextLine();
+                    String parse[] = line.split("\t+");
+                    if (parse[2].equals(arg)) {
+                        courseList.add(new Course(parse[1], parse[0], parse[2]));
+                    }
+                }
+            }
+            try {
+                objectOutputStream.writeObject(courseList);
+            }
+            catch (IOException e) {
+                e.printStackTrace();
+            }
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
     }
+
 
     /**
      Récupérer l'objet 'RegistrationForm' envoyé par le client en utilisant 'objectInputStream', l'enregistrer dans un fichier texte
@@ -100,7 +122,24 @@ public class Server {
      La méthode gére les exceptions si une erreur se produit lors de la lecture de l'objet, l'écriture dans un fichier ou dans le flux de sortie.
      */
     public void handleRegistration() {
-        // TODO: implémenter cette méthode
+        try {
+            RegistrationForm form = (RegistrationForm) objectInputStream.readObject();
+
+            String response = "Félicitation! Inscription réussi de " + form.getPrenom() +" "+ form.getNom() + " au cours " + form.getCourse().getCode();
+
+            FileWriter fw = new FileWriter("..\\..\\..\\src\\main\\java\\server\\data\\inscription.txt",true);
+            PrintWriter out = new PrintWriter(fw);
+
+            out.println(form.getCourse().getSession() + "\t" +form.getCourse().getCode() + "\t"+ form.getMatricule() +"\t\t" + form.getPrenom()+"\t\t" +
+                    form.getNom()+"\t"+ form.getEmail() );
+
+            objectOutputStream.writeObject(response);
+
+            out.close();
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }
 
