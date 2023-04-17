@@ -94,7 +94,7 @@ public class Server {
     public void handleLoadCourses(String arg) {
         ArrayList<Course> courseList =  new ArrayList<Course>();
         try {
-            File fileCourses = new File ("..\\..\\..\\src\\main\\java\\server\\data\\cours.txt");
+            File fileCourses = new File ("src/main/java/server/data/cours.txt");
             try (Scanner scanner = new Scanner (fileCourses)) {
                 while (scanner.hasNext()) {
                     String line = scanner.nextLine();
@@ -127,7 +127,7 @@ public class Server {
 
             String response = "Félicitation! Inscription réussi de " + form.getPrenom() +" "+ form.getNom() + " au cours " + form.getCourse().getCode();
 
-            FileWriter fw = new FileWriter("..\\..\\..\\src\\main\\java\\server\\data\\inscription.txt",true);
+            FileWriter fw = new FileWriter("src/main/java/server/data/inscription.txt",true);
             PrintWriter out = new PrintWriter(fw);
 
             out.println(form.getCourse().getSession() + "\t" +form.getCourse().getCode() + "\t"+ form.getMatricule() +"\t\t" + form.getPrenom()+"\t\t" +
