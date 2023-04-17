@@ -1,8 +1,5 @@
 package client.MVC;
 
-import java.awt.event.MouseEvent;
-import java.io.BufferedReader;
-import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Optional;
@@ -12,8 +9,6 @@ import java.util.regex.Pattern;
 import javafx.application.Application;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
@@ -24,19 +19,19 @@ import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import server.models.Course;
-import server.models.RegistrationForm;
 
 
 /**
  * La classe "Vue" permet de créer l'interface
  * graphique d'un site pour s'inscription à des cours
- * de l'Université de Montréal
+ * de l'Université de Montréal.
  */
 public class Vue extends Application {
 
     /**
      * La méthode "main" permet de
-     * lancer l'exécution du programme
+     * lancer l'exécution du programme.
+     *
      * @param args rêquete du client en format
      *             String stocké dans un tableau
      */
@@ -56,18 +51,18 @@ public class Vue extends Application {
 
         /**
          * Outils de JavaFX pour initialiser la
-         * fenêtre où sera contenu le programme
+         * fenêtre où sera contenu le programme.
          */
         Pane root = new Pane();
 
         /**
-         * Initialisation de la scène avec ses dimensions
+         * Initialisation de la scène avec ses dimensions.
          */
         Scene scene = new Scene(root, 800, 550);
 
 
         /**
-         * Change de couleur la scène de l'interface
+         * Change la couleur de la scène de l'interface.
          */
         root.setStyle("-fx-background-color: #EFECDF");
 
@@ -280,6 +275,23 @@ public class Vue extends Application {
         });
     }
 
+    /**
+     * La classe "validation" permet de vérifier si le cours
+     * a été sélectionné par l'élève, si toutes les cases à
+     * remplir l'ont été, si son matricule est bien de 6
+     * chiffres et si son email est valide. Si la cela n'as
+     * pas été fait, un message d'erreur s'affiche.
+     *
+     * @param table
+     * @param name Nom de l'élève voulant s'inscrire au cours
+     * @param lastName Nom de famille de l'élève voulant s'inscire au cours
+     * @param email Email de l'élève voulant s'inscire au cours
+     * @param userID Matrcile de l'élève voulant s'inscire au cours
+     * @return "True" si toutes les vérifications sont bonnes et
+     *          qu'il n'y a pas de problème. "False" si une des
+     *          vérifications émet un message d'erreur.
+     *
+     */
     public static Boolean validation(TableView table, TextField name, TextField lastName, TextField email, TextField userID) {
         String message = "";
 

@@ -12,11 +12,35 @@ import java.util.Scanner;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+/**
+ * La classe "Client" contient les informations ainsi que
+ * les méthodes nécessaires pour qu'un élève s'inscrire
+ * à un cours de l'Université de Montréal sans GUI.
+ */
 public class Client {
+    /**
+     * Permet d'assigner à "REGISTER_COMMAND" la valeur "INSCRIRE" de
+     * manière finale. Celle-ci ne pourra être changée ultérieurement.
+     */
     public final static String REGISTER_COMMAND = "INSCRIRE";
+
+    /**
+     * Permet d'assigner à "LOAD_COMMAND" la valeur "CHARGER" de
+     * manière finale. Celle-ci ne pourra être changée ultérieurement.
+     */
     public final static String LOAD_COMMAND = "CHARGER";
 
 
+    /**
+     * Permet de d'aller chercher la requête de l'élève et de lui
+     * renvoyer ce qu'il souhaite. Ici, on lui présente la liste
+     * des cours offerts lors de la session qu'il a choisit.
+     *
+     * @param session La session choisit par l'élève
+     * @return Une liste contenant tous les cours offerts durant la session choisit
+     * @throws IOException Est prise en cpmpte si la connexion au serveur n'a pas été successive
+     * @throws ClassNotFoundException Est prise en compte si aucune classe n'est trouvée
+     */
     public static ArrayList<Course> CourseRequest(String session) throws IOException, ClassNotFoundException {
 
         Socket server = new Socket("localhost", 1337);
@@ -24,10 +48,10 @@ public class Client {
         String p = (LOAD_COMMAND + " " + session);
 
 
-        ObjectOutputStream  objectOutputStream = new ObjectOutputStream(server.getOutputStream());
+        ObjectOutputStream objectOutputStream = new ObjectOutputStream(server.getOutputStream());
         objectOutputStream.writeObject(p);
 
-        ObjectInputStream  objectInputStream = new ObjectInputStream(server.getInputStream());
+        ObjectInputStream objectInputStream = new ObjectInputStream(server.getInputStream());
         Object object = objectInputStream.readObject();
 
         courseList = (ArrayList<Course>) object;
@@ -42,6 +66,19 @@ public class Client {
         return courseList;
     }
 
+    /**
+     * Permet d'envoyer le formulaire d'inscription remplit
+     * par l'élève au serveur pour que celui-ci envoie les
+     * informaions au fichier nommé "inscription.txt"
+     *
+     * @param name Prénom de l'élève s'inscrivant au cours
+     * @param familyName Nom de famille de l'élève s'inscrivant au cours
+     * @param email Email de l'élève s'inscrivant au cours
+     * @param studentNumber Matricule de l'élève s'inscrivant au cours
+     * @param course Cours choisit par l'élève s'inscrivant au cours
+     * @throws IOException Est prise en cpmpte si la connexion au serveur n'a pas été successive
+     * @throws ClassNotFoundException Est prise en compte si aucune classe n'est trouvée
+     */
     public static void RegistrationRequest(String name, String familyName, String email, String studentNumber, Course course) throws IOException, ClassNotFoundException {
         String p = REGISTER_COMMAND;
 
@@ -62,6 +99,15 @@ public class Client {
         objectInputStream.close();
         server.close();
     }
+
+    /**
+     * La méthode "main" lance le programme. Il permet
+     * de s'inscirire au cours voulu sans interface.
+     *
+     * @param args
+     * @throws IOException Est prise en cpmpte si la connexion au serveur n'a pas été successive
+     * @throws ClassNotFoundException Est prise en compte si aucune classe n'est trouvée
+     */
     public static void main(String args[]) throws ClassNotFoundException, IOException {
 
         Boolean consultSession = true;
@@ -157,4 +203,3 @@ public class Client {
         scanner.close();
     }
 }
-
