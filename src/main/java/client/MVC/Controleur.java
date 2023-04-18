@@ -31,7 +31,7 @@ public class Controleur {
      *
      * @param session La session sélectionnée par l'utilisateur du programme
      * @return Une liste contenant les cours ainsi que leurs informations de la session choisie
-     * @throws IOException
+     * @throws IOException Est prise en cpmpte si la connexion au serveur n'a pas été successive
      * @throws ClassNotFoundException Est prise en compte si aucune classe n'est trouvée
      */
     public static ArrayList<Course> CourseRequest(String session) throws IOException, ClassNotFoundException {
@@ -68,7 +68,7 @@ public class Controleur {
      * @param email Email de l'élève qui remplie le formulaire d'inscription
      * @param studentNumber Numéro de matricule de l'élève qui remplie le formulaire d'inscription
      * @param course Cours choisit par l'élève qui remplie le formulaire d'inscription
-     * @throws IOException
+     * @throws IOException Est prise en cpmpte si la connexion au serveur n'a pas été successive
      * @throws ClassNotFoundException Est prise en compte si aucune classe n'est trouvée
      */
     public static void RegistrationRequest(String name, String familyName, String email, String studentNumber, Course course) throws IOException, ClassNotFoundException {
