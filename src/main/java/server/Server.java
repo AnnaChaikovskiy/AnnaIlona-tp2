@@ -162,17 +162,18 @@ public class Server {
     }
 
     /**
-     Lire un fichier texte contenant des informations sur les cours et les transofmer en liste d'objets 'Course'.
-     La méthode filtre les cours par la session spécifiée en argument.
-     Ensuite, elle renvoie la liste des cours pour une session au client en utilisant l'objet 'objectOutputStream'.
-     La méthode gère les exceptions si une erreur se produit lors de la lecture du fichier ou de l'écriture de l'objet dans le flux.
-     @param arg la session pour laquelle on veut récupérer la liste des cours
+     * Lire un fichier texte contenant des informations sur les cours et les transofmer en liste d'objets 'Course'.
+     * La méthode filtre les cours par la session spécifiée en argument.
+     * Ensuite, elle renvoie la liste des cours pour une session au client en utilisant l'objet 'objectOutputStream'.
+     * La méthode gère les exceptions si une erreur se produit lors de la lecture du fichier ou de l'écriture de l'objet dans le flux.
+     *
+     * @param arg la session pour laquelle on veut récupérer la liste des cours
      */
     public void handleLoadCourses(String arg) {
-        ArrayList<Course> courseList =  new ArrayList<Course>();
+        ArrayList<Course> courseList = new ArrayList<Course>();
         try {
-            File fileCourses = new File ("src/main/java/server/data/cours.txt");
-            try (Scanner scanner = new Scanner (fileCourses)) {
+            File fileCourses = new File("src/main/java/server/data/cours.txt");
+            try (Scanner scanner = new Scanner(fileCourses)) {
                 while (scanner.hasNext()) {
                     String line = scanner.nextLine();
                     String parse[] = line.split("\t+");
@@ -183,8 +184,7 @@ public class Server {
             }
             try {
                 objectOutputStream.writeObject(courseList);
-            }
-            catch (IOException e) {
+            } catch (IOException e) {
                 e.printStackTrace();
             }
         } catch (FileNotFoundException e) {
@@ -194,28 +194,50 @@ public class Server {
 
 
     /**
-     Récupérer l'objet 'RegistrationForm' envoyé par le client en utilisant 'objectInputStream', l'enregistrer dans un fichier texte
-     et renvoyer un message de confirmation au client.
-     La méthode gére les exceptions si une erreur se produit lors de la lecture de l'objet, l'écriture dans un fichier ou dans le flux de sortie.
+     * Récupérer l'objet 'RegistrationForm' envoyé par le client en utilisant 'objectInputStream', l'enregistrer dans un fichier texte
+     * et renvoyer un message de confirmation au client.
+     * La méthode gére les exceptions si une erreur se produit lors de la lecture de l'objet, l'écriture dans un fichier ou dans le flux de sortie.
      */
     public void handleRegistration() {
         try {
             RegistrationForm form = (RegistrationForm) objectInputStream.readObject();
 
-            String response = "Félicitation! Inscription réussi de " + form.getPrenom() +" "+ form.getNom() + " au cours " + form.getCourse().getCode();
+            String responseWorks = "Félicitation! Inscription réussi de " + form.getPrenom() + " " + form.getNom() + " au cours " + form.getCourse().getCode();
+            String responseNotWorks = "Vous êtes déjà incrit au cours " + form.getCourse().getCode();
+            Boolean found = false;
 
-            FileWriter fw = new FileWriter("src/main/java/server/data/inscription.txt",true);
-            PrintWriter out = new PrintWriter(fw);
+            System.out.println(responseWorks);
 
-            out.println(form.getCourse().getSession() + "\t" +form.getCourse().getCode() + "\t"+ form.getMatricule() +"\t\t" + form.getPrenom()+"\t\t" +
-                    form.getNom()+"\t"+ form.getEmail() );
+            //File regVerification = new File("..\\..\\..\\src\\main\\java\\server\\data\\inscription.txt");
+            File regVerification = new File("./src/main/java/server/data/inscription.txt");
+            Scanner scanner = new Scanner(regVerification);
+            while (scanner.hasNext()) {
+                String line = scanner.nextLine();
+                String parse[] = line.split("\t+");
+                System.out.print(parse[1]);
+                System.out.println(parse[2]);
+                if (parse[1].equals(form.getCourse().getCode()) & (parse[2].equals(form.getMatricule()))) {
+                    found = true;
+                    break;
+                }
+            }
+            scanner.close();
 
-            objectOutputStream.writeObject(response);
+            if (!found) {
+                //FileWriter fw = new FileWriter("..\\..\\..\\src\\main\\java\\server\\data\\inscription.txt", true);
+                FileWriter fw = new FileWriter("src/main/java/server/data/inscription.txt", true);
+                PrintWriter out = new PrintWriter(fw);
 
-            out.close();
-        }
-        catch (Exception e) {
+                out.println(form.getCourse().getSession() + "\t" + form.getCourse().getCode() + "\t" + form.getMatricule() + "\t\t" + form.getPrenom() + "\t\t" +
+                        form.getNom() + "\t" + form.getEmail());
+
+                objectOutputStream.writeObject(responseWorks);
+                out.close();
+            } else
+                objectOutputStream.writeObject(responseNotWorks);
+
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
-}
+
