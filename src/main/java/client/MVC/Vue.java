@@ -282,7 +282,7 @@ public class Vue extends Application {
      * chiffres et si son email est valide. Si la cela n'as
      * pas été fait, un message d'erreur s'affiche.
      *
-     * @param table
+     * @param table "TableView" de l'interface
      * @param name Nom de l'élève voulant s'inscrire au cours
      * @param lastName Nom de famille de l'élève voulant s'inscire au cours
      * @param email Email de l'élève voulant s'inscire au cours

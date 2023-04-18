@@ -170,8 +170,26 @@ public class Client {
         name = scanner.nextLine();
         System.out.println("Veuillez saisir votre nom: ");
         familyName = scanner.nextLine();
-        System.out.println("Veuillez saisir votre email: ");
-        email = scanner.nextLine();
+
+        do {
+            System.out.println("Veuillez saisir votre email: ");
+            email = scanner.nextLine();
+            String rightEmail = "^[a-zA-Z0-9_+&*-]+(?:\\."+
+                    "[a-zA-Z0-9_+&*-]+)*@" +
+                    "(?:[a-zA-Z0-9-]+\\.)+[a-z" +
+                    "A-Z]{2,7}$";
+            Pattern pattern = Pattern.compile(rightEmail);
+            Matcher matcher = pattern.matcher(email);
+            boolean gotMatched = matcher.matches();
+
+            if (!gotMatched) {
+                System.out.println("Veuillez saisir un mail valide.");
+            }
+            else verification = false;
+        } while (verification);
+
+        //System.out.println("Veuillez saisir votre email: ");
+        //email = scanner.nextLine();
 
         do {
             System.out.println("Veuillez saisir votre matricule: ");
