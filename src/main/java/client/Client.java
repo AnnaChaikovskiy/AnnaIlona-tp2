@@ -188,9 +188,6 @@ public class Client {
             else verification = false;
         } while (verification);
 
-        //System.out.println("Veuillez saisir votre email: ");
-        //email = scanner.nextLine();
-
         do {
             System.out.println("Veuillez saisir votre matricule: ");
             studentNumber = scanner.nextLine();
