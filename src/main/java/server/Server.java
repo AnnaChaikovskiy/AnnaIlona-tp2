@@ -11,9 +11,23 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Scanner;
 
+/**
+ * La classe "Server" définie deux "public final
+ * static" de type String ainsi que plusieurs objets
+ * privés. De plus, elle contient un constructeur.
+ */
 public class Server {
 
+    /**
+     * La commande "REGISTER_COMMAND" est associée
+     * au String "INSCRIRE" et il ne peut être modifié.
+     */
     public final static String REGISTER_COMMAND = "INSCRIRE";
+
+    /**
+     * La commande "LOAD_COMMAND" est associée au
+     * String "CHARGER" et il ne peut être modifié.
+     */
     public final static String LOAD_COMMAND = "CHARGER";
     private final ServerSocket server;
     private Socket client;
@@ -21,12 +35,29 @@ public class Server {
     private ObjectOutputStream objectOutputStream;
     private final ArrayList<EventHandler> handlers;
 
+
+    /**
+     * Le constructeur de la classe "Server" prend en paramètre
+     * le "port" de type "int" choisit par "ServeurLauncher". Il
+     * envoie aussi une exception de type "IOException". De plus,
+     * il initialize trois objets dont un qui est une "ArrayList".
+     *
+     * @param port port numéro 1337
+     * @throws IOException lorsque la connection n'a pas réussie
+     *                     entre le client et le serveur
+     */
     public Server(int port) throws IOException {
         this.server = new ServerSocket(port, 1);
         this.handlers = new ArrayList<EventHandler>();
         this.addEventHandler(this::handleEvents);
     }
 
+    /**
+     * La méthode "addEventHandler" ajoute un paramètre
+     * de type "EventHandler" à la liste "handlers"
+     *
+     * @param h
+     */
     public void addEventHandler(EventHandler h) {
         this.handlers.add(h);
     }
@@ -37,6 +68,11 @@ public class Server {
         }
     }
 
+    /**
+     * La méthode "run" contient une boucle permettant
+     * de connecter l'utilisateur au serveur pour exécuter
+     * sa commande avant de le déconnecter.
+     */
     public void run() {
         while (true) {
             try {
@@ -53,6 +89,17 @@ public class Server {
         }
     }
 
+    /**
+     * La méthode "listen" attend que le client émette un message
+     * qui est, par la suite, traité si aucune  exception n'a été
+     * notifiée. Ensuite, il envoyé vers la méthode "alterHandlers"
+     * pour avertir les "EventHandler" des changements occurés.
+     *
+     * @throws IOException lorsque la connection entre le client
+     *                     et le serveur n'a pas réussie
+     * @throws ClassNotFoundException lorsque la méthode ne
+     *                                trouve pas la classe "Server"
+     */
     public void listen() throws IOException, ClassNotFoundException {
         String line;
         if ((line = this.objectInputStream.readObject().toString()) != null) {
@@ -63,6 +110,19 @@ public class Server {
         }
     }
 
+    /**
+     * La méthode "processCommandLine" permet de séparer une
+     * ligne de type "String" en deux parties. La première
+     * partie du "String" correspond à la commande  "cmd" alors
+     * que la deuxième correspond à la partie argument "args".
+     * Le tout est, ensuite, mis dans une paire "Pair<>(cmd, args)"
+     *
+     * @param line le texte qui définit la commande
+     *             ainsi que l'article choisit par le client
+     * @return l'inscription du client ainsi que le
+     *         cours qu'il a choisit sous forme d'une
+     *         pair "Pair<>(cmd, args)"
+     */
     public Pair<String, String> processCommandLine(String line) {
         String[] parts = line.split(" ");
         String cmd = parts[0];
@@ -70,12 +130,29 @@ public class Server {
         return new Pair<>(cmd, args);
     }
 
+    /**
+     * La méthode "disconnect" permet de
+     * déconnecter le client tout en arrêtant
+     * de générer de nouveaux "flux d'objects"
+     *
+     * @throws IOException lorsque qu'on n'arrive pas
+     *                     à déconnecter le client du serveur
+     */
     public void disconnect() throws IOException {
         objectOutputStream.close();
         objectInputStream.close();
         client.close();
     }
 
+    /**
+     * La méthode "handleEvents" permet de déterminer
+     * laquelle des deux méthodes, "handleRegistration"
+     * ou "handleLoadCourses", utiliser selon la requête
+     * envoyé par le client.
+     *
+     * @param cmd l'incrisption au cours choisit par le client
+     * @param arg le cours que le client veut choisir
+     */
     public void handleEvents(String cmd, String arg) {
         if (cmd.equals(REGISTER_COMMAND)) {
             handleRegistration();
@@ -163,4 +240,4 @@ public class Server {
             e.printStackTrace();
         }
     }
-}
+
